@@ -1,4 +1,4 @@
-package userevent
+package userEvent
 
 type UserEvent struct {
 	idEvent   string

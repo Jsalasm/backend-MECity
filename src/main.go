@@ -1,20 +1,21 @@
 package main
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
 	"errors"
-	"go-project/users"
+	"go-project/user"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-var Users = users.GetAllUsers()
+var Users = user.GetAllUsers()
 
-func getUsers (context *gin.Context) {
+func getUsers(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, Users)
 }
 
-func addUser (context *gin.Context) {
-	var newUser users.User
+func addUser(context *gin.Context) {
+	var newUser user.User
 
 	if err := context.BindJSON(&newUser); err != nil {
 		return
@@ -25,14 +26,14 @@ func addUser (context *gin.Context) {
 	context.IndentedJSON(http.StatusCreated, newUser)
 }
 
-func updateUser (context *gin.Context) {
+func updateUser(context *gin.Context) {
 	id := context.Param("id")
 
 	user, err := getUserById(id)
 
-	var newUser users.User
+	var newUser = user.User
 
-	if err != nil{
+	if err != nil {
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
 	} else {
 		if err := context.BindJSON(&newUser); err != nil {
@@ -47,8 +48,8 @@ func updateUser (context *gin.Context) {
 	}
 }
 
-func getUserById (id string) (*users.User, error) {
-	for i, U:= range Users {
+func getUserById(id string) (*user.User, error) {
+	for i, U := range Users {
 		if U.Id == id {
 			return &Users[i], nil
 		}
@@ -57,12 +58,12 @@ func getUserById (id string) (*users.User, error) {
 	return nil, errors.New("User not found")
 }
 
-func getUser (context *gin.Context) {
+func getUser(context *gin.Context) {
 	id := context.Param("id")
 
 	user, err := getUserById(id)
 
-	if err != nil{
+	if err != nil {
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
 	} else {
 		context.IndentedJSON(http.StatusOK, user)
