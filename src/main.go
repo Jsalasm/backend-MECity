@@ -2,20 +2,20 @@ package main
 
 import (
 	"errors"
-	"go-project/user"
+	userModel "go-project/model/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-var Users = user.GetAllUsers()
+var Users = userModel.GetAllUsers()
 
 func getUsers(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, Users)
 }
 
 func addUser(context *gin.Context) {
-	var newUser user.User
+	var newUser userModel.User
 
 	if err := context.BindJSON(&newUser); err != nil {
 		return
@@ -31,7 +31,7 @@ func updateUser(context *gin.Context) {
 
 	user, err := getUserById(id)
 
-	var newUser = user.User
+	var newUser userModel.User
 
 	if err != nil {
 		context.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
@@ -48,7 +48,7 @@ func updateUser(context *gin.Context) {
 	}
 }
 
-func getUserById(id string) (*user.User, error) {
+func getUserById(id string) (*userModel.User, error) {
 	for i, U := range Users {
 		if U.Id == id {
 			return &Users[i], nil
